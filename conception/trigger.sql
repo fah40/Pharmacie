@@ -36,3 +36,19 @@ CREATE TRIGGER update_stock_trigger
 AFTER INSERT ON VenteMedicament
 FOR EACH ROW
 EXECUTE FUNCTION update_medicament_stock();
+
+-- Fonction pour calculer la commission
+CREATE OR REPLACE FUNCTION calculer_commission()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Calcul de la commission : 5% du produit prixUnitaire * quantiteVendue
+    NEW.commission := 0.05 * (NEW.prixUnitaire * NEW.quantiteVendue);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Création du trigger
+CREATE TRIGGER trigger_calcul_commission
+BEFORE INSERT OR UPDATE ON VenteMedicament
+FOR EACH ROW
+EXECUTE FUNCTION calculer_commission();

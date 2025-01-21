@@ -115,6 +115,9 @@ CREATE TABLE VenteMedicament(
    dateVente DATE DEFAULT CURRENT_DATE,
    prixUnitaire NUMERIC(15,2),
    idClient INTEGER,
+   idVendeur INTEGER,
+   commission NUMERIC(15,2),
+   FOREIGN KEY(idVendeur) REFERENCES User(idUser)
    FOREIGN KEY(idMedicament) REFERENCES medicament(idMedicament),
    FOREIGN KEY(idClient) REFERENCES Client(idClient)
 );
@@ -124,6 +127,13 @@ CREATE TABLE Conseiller(
    idMedicament INTEGER,
    date DATE,
    FOREIGN KEY(idMedicament) REFERENCES medicament(idMedicament)
+);
+
+CREATE TABLE User(
+   idUser SERIAL PRIMARY KEY,
+   username VARCHAR(50) UNIQUE,
+   password VARCHAR(255) NOT NULL,
+   telephone VARCHAR(20) NOT NULL
 );
 
 ALTER TABLE VenteMedicament

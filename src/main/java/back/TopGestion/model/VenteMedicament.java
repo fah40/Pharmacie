@@ -17,6 +17,24 @@ public class VenteMedicament {
     private double prixUnitaire;
     private double total;
     private Client client;
+    private User vendeur;
+    private double commission;
+
+    public User getVendeur() {
+        return vendeur;
+    }
+
+    public void setVendeur(User idVendeur) {
+        this.vendeur = idVendeur;
+    }
+
+    public double getCommission() {
+        return commission;
+    }
+
+    public void setCommission(double commission) {
+        this.commission = commission;
+    }
 
     // Getters and Setters
     public double getTotal() {
@@ -95,13 +113,19 @@ public class VenteMedicament {
                 instance.setQuantiteVendue(rs.getInt("quantiteVendue"));
                 instance.setDateVente(rs.getDate("dateVente"));
                 instance.setPrixUnitaire(rs.getDouble("prixUnitaire"));
-                instance.setTotal(rs.getDouble("prixUnitaire") * rs.getInt("quantiteVendue"));
+                double tot = rs.getDouble("prixUnitaire") * rs.getInt("quantiteVendue");
+                instance.setTotal(tot);
                 instance.setClient(Client.getById(rs.getInt("idClient")));
+                instance.setVendeur(User.getById(rs.getInt("Vendeur")));
+                instance.setCommission(rs.getDouble("commission"));
             }
         } finally {
-            if (rs != null) rs.close();
-            if (st != null) st.close();
-            if (con != null && !con.isClosed()) con.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (con != null && !con.isClosed())
+                con.close();
         }
 
         return instance;
@@ -128,13 +152,18 @@ public class VenteMedicament {
                 item.setPrixUnitaire(rs.getDouble("prixUnitaire"));
                 item.setTotal(rs.getDouble("prixUnitaire") * rs.getInt("quantiteVendue"));
                 item.setClient(Client.getById(rs.getInt("idClient")));
+                item.setVendeur(User.getById(rs.getInt("idVendeur")));
+                item.setCommission(rs.getDouble("commission"));
 
                 items.add(item);
             }
         } finally {
-            if (rs != null) rs.close();
-            if (st != null) st.close();
-            if (con != null && !con.isClosed()) con.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (con != null && !con.isClosed())
+                con.close();
         }
 
         return items.toArray(new VenteMedicament[0]);
@@ -146,13 +175,15 @@ public class VenteMedicament {
         PreparedStatement st = null;
 
         try {
-            String query = "INSERT INTO VenteMedicament (idMedicament, quantiteVendue, dateVente, prixUnitaire, idClient) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO VenteMedicament (idMedicament, quantiteVendue, dateVente, prixUnitaire, idClient,idVendeur,commission) VALUES (?, ?, ?, ?, ?,?,?)";
             st = con.prepareStatement(query);
             st.setInt(1, this.medicament.getIdMedicament());
             st.setInt(2, this.quantiteVendue);
             st.setDate(3, this.dateVente);
             st.setDouble(4, this.prixUnitaire);
             st.setInt(5, this.client.getIdClient());
+            st.setInt(6, this.vendeur.getIdUser());
+            st.setDouble(7, this.commission);
 
             try {
                 st.executeUpdate();
@@ -162,8 +193,10 @@ public class VenteMedicament {
                 throw new Exception("Failed to insert record", e);
             }
         } finally {
-            if (st != null) st.close();
-            if (con != null && !con.isClosed()) con.close();
+            if (st != null)
+                st.close();
+            if (con != null && !con.isClosed())
+                con.close();
         }
     }
 
@@ -173,7 +206,7 @@ public class VenteMedicament {
         PreparedStatement st = null;
 
         try {
-            String query = "UPDATE VenteMedicament SET idMedicament = ?, quantiteVendue = ?, dateVente = ?, prixUnitaire = ?, idClient = ? WHERE id = ?";
+            String query = "UPDATE VenteMedicament SET idMedicament = ?, quantiteVendue = ?, dateVente = ?, prixUnitaire = ?, idClient = ? , idVendeur= ? WHERE id = ?";
             st = con.prepareStatement(query);
             st.setInt(1, this.medicament.getIdMedicament());
             st.setInt(2, this.quantiteVendue);
@@ -181,6 +214,7 @@ public class VenteMedicament {
             st.setDouble(4, this.prixUnitaire);
             st.setInt(5, this.client.getIdClient());
             st.setInt(6, this.id);
+            st.setInt(7, this.vendeur.getIdUser());
 
             try {
                 st.executeUpdate();
@@ -190,8 +224,10 @@ public class VenteMedicament {
                 throw new Exception("Failed to update record", e);
             }
         } finally {
-            if (st != null) st.close();
-            if (con != null && !con.isClosed()) con.close();
+            if (st != null)
+                st.close();
+            if (con != null && !con.isClosed())
+                con.close();
         }
     }
 
@@ -213,8 +249,10 @@ public class VenteMedicament {
                 throw new Exception("Failed to delete record", e);
             }
         } finally {
-            if (st != null) st.close();
-            if (con != null && !con.isClosed()) con.close();
+            if (st != null)
+                st.close();
+            if (con != null && !con.isClosed())
+                con.close();
         }
     }
 
@@ -224,7 +262,7 @@ public class VenteMedicament {
         ResultSet rs = null;
         List<VenteMedicament> items = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT * FROM v_historiqueVente WHERE 1=1");
-    
+
         try {
             // Ajout des conditions dynamiques
             if (type > 0) {
@@ -245,23 +283,23 @@ public class VenteMedicament {
             if (idCategorie > 0) {
                 query.append(" AND idCategorie = ?");
             }
-    
+
             // Connexion à la base de données
             con = MyConnect.getConnection();
             st = con.prepareStatement(query.toString());
-    
+
             // Définir les paramètres
-            
+
             if (date != null) {
                 st.setDate(1, Date.valueOf(date));
             }
             if (idCategorie > 0) {
                 st.setInt(2, idCategorie);
             }
-    
+
             // Exécution de la requête
             rs = st.executeQuery();
-    
+
             // Parcourir les résultats
             while (rs.next()) {
                 VenteMedicament item = new VenteMedicament();
@@ -271,13 +309,15 @@ public class VenteMedicament {
                 item.setDateVente(rs.getDate("dateVente"));
                 item.setPrixUnitaire(rs.getDouble("prix"));
                 item.setTotal(item.getPrixUnitaire() * rs.getInt("quantiteVendue"));
-    
+                item.setVendeur(User.getById(rs.getInt("idVendeur")));
+                item.setCommission(rs.getDouble("commission"));
+
                 // Récupérer l'objet Client associé
                 int clientId = rs.getInt("idClient");
                 if (clientId > 0) {
                     item.setClient(Client.getById(clientId));
                 }
-    
+
                 items.add(item);
             }
         } catch (Exception e) {
@@ -285,12 +325,15 @@ public class VenteMedicament {
             throw new Exception("Erreur lors de la recherche des médicaments : " + e.getMessage());
         } finally {
             // Fermer les ressources
-            if (rs != null) rs.close();
-            if (st != null) st.close();
-            if (con != null && !con.isClosed()) con.close();
+            if (rs != null)
+                rs.close();
+            if (st != null)
+                st.close();
+            if (con != null && !con.isClosed())
+                con.close();
         }
-    
+
         return items.toArray(new VenteMedicament[0]);
     }
-    
+
 }

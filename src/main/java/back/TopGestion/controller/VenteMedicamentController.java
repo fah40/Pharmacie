@@ -4,6 +4,7 @@ import back.TopGestion.model.Categorie;
 import back.TopGestion.model.Client;
 import back.TopGestion.model.Medicament;
 import back.TopGestion.model.VenteMedicament;
+import back.TopGestion.model.User;
 
 import java.sql.Date;
 
@@ -34,13 +35,14 @@ public class VenteMedicamentController {
 
     @PostMapping("/create")
     public String createVente(@RequestParam int idMedicament,
-                            @RequestParam int quantiteVendue,
-                            @RequestParam(required = false) Integer idClient,
-                            @RequestParam(required = false) String nom,
-                            @RequestParam(required = false) String adresse,
-                            @RequestParam(required = false) String telephone,
-                            @RequestParam String date,
-                            Model model) {
+            @RequestParam int quantiteVendue,
+            @RequestParam int idVendeur,
+            @RequestParam(required = false) Integer idClient,
+            @RequestParam(required = false) String nom,
+            @RequestParam(required = false) String adresse,
+            @RequestParam(required = false) String telephone,
+            @RequestParam String date,
+            Model model) {
         try {
             // Vérification et insertion du client si nécessaire
             if (idClient == null || idClient == 0) {
@@ -62,6 +64,7 @@ public class VenteMedicamentController {
             vente.setPrixUnitaire(Medicament.getById(idMedicament).getPrix());
             vente.setQuantiteVendue(quantiteVendue);
             vente.setClient(Client.getById(idClient));
+            vente.setVendeur(User.getById(idClient));
             vente.setDateVente(Date.valueOf(date));
 
             vente.insert();
@@ -91,9 +94,9 @@ public class VenteMedicamentController {
 
     @PostMapping("/update")
     public String updateVente(@RequestParam int id,
-                               @RequestParam int idMedicament,
-                               @RequestParam int quantiteVendue,
-                               Model model) {
+            @RequestParam int idMedicament,
+            @RequestParam int quantiteVendue,
+            Model model) {
         try {
             VenteMedicament vente = VenteMedicament.getById(id);
             if (vente != null) {
@@ -123,11 +126,11 @@ public class VenteMedicamentController {
 
     @PostMapping("/search")
     public String searchVente(@RequestParam(defaultValue = "0") int type,
-                                    @RequestParam(defaultValue = "0") int idCategorie,
-                                    @RequestParam String date,
-                                    Model model) {
+            @RequestParam(defaultValue = "0") int idCategorie,
+            @RequestParam String date,
+            Model model) {
         try {
-            VenteMedicament[] venteMedicaments = VenteMedicament.search(type, idCategorie,date);
+            VenteMedicament[] venteMedicaments = VenteMedicament.search(type, idCategorie, date);
             model.addAttribute("ventes", venteMedicaments);
 
             Categorie[] categorie = Categorie.getAll();

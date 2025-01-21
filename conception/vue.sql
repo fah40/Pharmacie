@@ -22,9 +22,12 @@ SELECT
     m.*,
     v.id,
     v.quantiteVendue,
-    v.dateVente
+    v.dateVente,
+    v.idVendeur,
+    v.commission
 FROM VenteMedicament v 
 JOIN Client c ON v.idClient=c.idClient 
+JOIN User u ON v.idUser=u.idUser
 JOIN Medicament m ON v.idMedicament=m.idMedicament;
     
 
