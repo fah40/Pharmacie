@@ -1,0 +1,64 @@
+Maladie
+    idMaladie
+    nom
+    description
+
+Medicament
+    idMedicament
+    nom
+    idMaladie
+    description
+    ageMin
+    ageMax
+    prix
+
+Unite
+    idunite
+    nom
+
+Matiere
+    idmatiere
+    nom
+    quantiteStock
+    idunite
+
+AchatMatiere
+    idAchat
+    idmatiere
+    quantiteAchetee
+    dateAchat
+    prixUnitaire
+
+Production
+    idProduction
+    idMedicament
+    quantiteProduite
+    dateProduction
+
+MouvementMatiere
+    idMouvement
+    entre
+    sortie
+    dateMouvement
+    idMatiere
+
+Formule
+    idFormule
+    idMedicament
+    idmatiere
+    quantiteNecessaire
+
+ConsommationMatiere
+    idConsommation
+    idProduction
+    idmatiere
+    quantiteConsommee
+
+
+header.jsp
+footer.jsp
+
+listMaladie.jsp
+
+creation page contenant la liste des maladide a gauche et 
+une formulaire d'insertion a droite

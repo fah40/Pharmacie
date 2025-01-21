@@ -1,0 +1,166 @@
+je suis sur un projet java ,
+
+la conception:
+
+Conception du Projet : Gestion de Pharmacie
+
+1. Objectifs du projet
+
+    Développer une application permettant à une pharmacie de gérer :
+    
+    Les maladies traitées par ses médicaments.
+    Les médicaments spécifiques associés à chaque maladie.
+    Les matières premières nécessaires à la fabrication des médicaments.
+    La gestion des stocks des matières premières (ajout, achat, consommation).
+    La fabrication des médicaments en vérifiant la disponibilité des matières premières.
+    L’historique des productions, des achats et des consommations.
+
+2. Modèle conceptuel
+Entités principales :
+    -Maladie
+    Décrit les maladies pour lesquelles la pharmacie produit des médicaments.
+    Exemple : Fièvre, Malaria, etc.
+
+    -Médicament
+    Chaque médicament est spécifique à une maladie et a une formule de fabrication.
+    Exemple : Paracétamol, Aspirine.
+
+    -Matière Première
+    Les composants nécessaires pour fabriquer des médicaments.
+    Exemple : Kinine, Aloe, Acétaminophène.
+
+    -Formule
+    Définit les quantités de matières premières nécessaires pour fabriquer un médicament.
+    Exemple : 200g de kinine + 40g d'aloe pour 1 paracétamol.
+
+    -Achat de Matières Premières
+    Enregistre les achats effectués pour maintenir le stock de matières premières.
+
+    -Production
+    Permet de gérer la fabrication des médicaments en déduisant les matières premières consommées.
+
+3. Fonctionnalités principales
+    3.1. Gestion des maladies
+    Ajouter, modifier et supprimer des maladies.
+    Exemple : Ajouter une maladie nommée "Fièvre".
+
+    3.2. Gestion des médicaments
+    Ajouter, modifier et supprimer des médicaments.
+    Associer un médicament à une maladie.
+    Exemple : Ajouter un médicament "Paracétamol" pour la maladie "Fièvre".
+
+    3.3. Gestion des matières premières
+    Ajouter, modifier et supprimer des matières premières.
+    Gérer le stock (augmentation via les achats, diminution via la production).
+    Exemple : Ajouter une matière première "Kinine".
+
+    3.4. Gestion des formules
+    Définir les matières premières nécessaires pour fabriquer un médicament.
+    Exemple : Définir que 1 Paracétamol nécessite 200g de Kinine.
+
+    3.5. Gestion des achats
+    Enregistrer l'achat de matières premières.
+    Exemple : Acheter 500g de Kinine à 10 000 ariary.
+
+    3.6. Gestion de la production
+    Produire un médicament en indiquant une quantité.
+    Vérifier le stock disponible des matières premières.
+    Déduire les quantités consommées des matières premières.
+    Exemple : Produire 10 Paracétamols si les stocks de Kinine et Aloe sont suffisants.
+
+    3.7. Suivi des consommations
+    Consulter les matières premières consommées pour chaque production.
+
+Les classes Java qui représentent les tables de la base de données. Exemple :
+
+    Maladie
+    Medicament
+    MatierePremiere
+    Formule
+    AchatMatierePremiere
+    Production
+    ConsommationMatierePremiere
+
+Diagramme de Cas d'Utilisation
+
+   - Gérer les maladies
+   - Gérer les médicaments
+   - Gérer les matières premières
+   - Gérer les formules
+   - Enregistrer des achats
+   - Lancer une fabrication
+   - Consulter les stocks
+   - Générer des rapports
+
+base sugger:
+
+create database pharmacie;
+\c pharmacie;
+
+CREATE TABLE Maladie (
+    idMaladie SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE Medicament (
+    idMedicament SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    idMaladie INT NOT NULL,
+    description TEXT,
+    FOREIGN KEY (idMaladie) REFERENCES Maladie(idMaladie)
+);
+
+CREATE TABLE unite (
+    idunite SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE matiere (
+    idmatiere SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    quantiteStock DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    idunite int NOT NULL
+);
+
+CREATE TABLE Formule (
+    idFormule SERIAL PRIMARY KEY,
+    idMedicament INT NOT NULL,
+    idmatiere INT NOT NULL,
+    quantiteNecessaire DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (idMedicament) REFERENCES Medicament(idMedicament),
+    FOREIGN KEY (idmatiere) REFERENCES matiere(idmatiere)
+);
+
+CREATE TABLE Achatmatiere (
+    idAchat SERIAL PRIMARY KEY,
+    idmatiere INT NOT NULL,
+    quantiteAchetee DECIMAL(10, 2) NOT NULL,
+    dateAchat TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    prixUnitaire DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (idmatiere) REFERENCES matiere(idmatiere)
+);
+
+CREATE TABLE Production (
+    idProduction SERIAL PRIMARY KEY,
+    idMedicament INT NOT NULL,
+    quantiteProduite INT NOT NULL,
+    dateProduction TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (idMedicament) REFERENCES Medicament(idMedicament)
+);
+
+CREATE TABLE Consommationmatiere (
+    idConsommation SERIAL PRIMARY KEY,
+    idProduction INT NOT NULL,
+    idmatiere INT NOT NULL,
+    quantiteConsommee DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (idProduction) REFERENCES Production(idProduction),
+    FOREIGN KEY (idmatiere) REFERENCES matiere(idmatiere)
+);
+
+modifier les table pour pouvoir rechercher un medicament par les critere :
+age , maladie , prix ,
+
+stock entre et sortie pour les medicament et les matiere premiere
+
+
