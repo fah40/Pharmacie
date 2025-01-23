@@ -256,13 +256,13 @@ public class VenteMedicament {
         }
     }
 
-    public static VenteMedicament[] search(int type, int idCategorie, String date) throws Exception {
+    public static VenteMedicament[] search(int type, int idCategorie, int idVendeur, String datemin, String datemax) throws Exception {
         Connection con = null;
         PreparedStatement st = null;
         ResultSet rs = null;
         List<VenteMedicament> items = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT * FROM v_historiqueVente WHERE 1=1");
-
+        System.out.println(datemin + "---" + datemax);
         try {
             // Ajout des conditions dynamiques
             if (type > 0) {
@@ -276,9 +276,14 @@ public class VenteMedicament {
                     query.append(" AND ageMin >= 0 AND ageMax <= 5");
                 }
             }
-
-            if (date != null) {
-                query.append(" AND datevente = ?");
+            if (idVendeur > 0) {
+                query.append(" AND idvendeur = ?");
+            }
+            if (datemin != null && !datemin.isEmpty()) {
+                query.append(" AND datevente >= ?");
+            }
+            if (datemax != null && !datemax.isEmpty()) {
+                query.append(" AND datevente <= ?");
             }
             if (idCategorie > 0) {
                 query.append(" AND idCategorie = ?");
@@ -287,16 +292,23 @@ public class VenteMedicament {
             // Connexion à la base de données
             con = MyConnect.getConnection();
             st = con.prepareStatement(query.toString());
-
+            
             // Définir les paramètres
-
-            if (date != null) {
-                st.setDate(1, Date.valueOf(date));
+            int index=1;
+            if (idVendeur > 0) {
+                st.setInt(index++, idVendeur);
+            }
+            if (datemin != null && !datemin.isEmpty()) {
+                st.setDate(index++, Date.valueOf(datemin));
+            }
+            if (datemax != null && !datemax.isEmpty()) {
+                st.setDate(index++, Date.valueOf(datemax));
             }
             if (idCategorie > 0) {
-                st.setInt(2, idCategorie);
+                st.setInt(index++, idCategorie);
             }
-
+            
+            System.out.println(query);
             // Exécution de la requête
             rs = st.executeQuery();
 

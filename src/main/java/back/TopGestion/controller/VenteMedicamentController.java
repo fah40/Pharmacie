@@ -15,18 +15,30 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/vente")
 public class VenteMedicamentController {
+    Medicament[] medicaments = null;
+    Client[] clients = null;
+    VenteMedicament[] ventes = null;
+    Categorie[] categories = null;
+    User[] vendeurs = null;
+
+    int code=0;
 
     @GetMapping("/list")
     public String getAllVentes(Model model) {
         try {
-            Medicament[] medicaments = Medicament.getAll();
+            if (medicaments == null && clients==null && ventes==null && categories==null && vendeurs==null || code==1) {
+                medicaments = Medicament.getAll();
+                clients = Client.getAll();
+                ventes = VenteMedicament.getAll();
+                categories = Categorie.getAll();
+                vendeurs = User.getAll();
+                code=0;
+            }
             model.addAttribute("medicaments", medicaments);
-
-            Client[] clients = Client.getAll();
             model.addAttribute("clients", clients);
-
-            VenteMedicament[] ventes = VenteMedicament.getAll();
             model.addAttribute("ventes", ventes);
+            model.addAttribute("categories", categories);
+            model.addAttribute("vendeurs", vendeurs);
         } catch (Exception e) {
             model.addAttribute("error", "Erreur lors de la récupération des ventes : " + e.getMessage());
         }
@@ -64,10 +76,13 @@ public class VenteMedicamentController {
             vente.setPrixUnitaire(Medicament.getById(idMedicament).getPrix());
             vente.setQuantiteVendue(quantiteVendue);
             vente.setClient(Client.getById(idClient));
-            vente.setVendeur(User.getById(idClient));
+            vente.setVendeur(User.getById(idVendeur));
             vente.setDateVente(Date.valueOf(date));
-
+            double com= (vente.getQuantiteVendue() * vente.getPrixUnitaire())*0.05;
+            vente.setCommission(com);
             vente.insert();
+
+            ventes = VenteMedicament.getAll();
 
             model.addAttribute("message", "Vente créée avec succès.");
         } catch (Exception e) {
@@ -121,20 +136,30 @@ public class VenteMedicamentController {
         } catch (Exception e) {
             model.addAttribute("error", "Erreur lors de la suppression de la vente : " + e.getMessage());
         }
+        code=1;
         return "redirect:/vente/list";
     }
 
     @PostMapping("/search")
-    public String searchVente(@RequestParam(defaultValue = "0") int type,
-            @RequestParam(defaultValue = "0") int idCategorie,
-            @RequestParam String date,
-            Model model) {
+    public String searchVente(@RequestParam int type,
+                              @RequestParam int idCategorie,
+                              @RequestParam int vendeur,
+                              @RequestParam(required = false) String datemin,
+                              @RequestParam(required = false) String datemax,
+                                Model model) {
         try {
-            VenteMedicament[] venteMedicaments = VenteMedicament.search(type, idCategorie, date);
-            model.addAttribute("ventes", venteMedicaments);
+            ventes = VenteMedicament.search(type,idCategorie,vendeur,datemin,datemax);
+            medicaments = Medicament.getAll();
+            clients = Client.getAll();
+            categories = Categorie.getAll();
+            vendeurs = User.getAll();
 
-            Categorie[] categorie = Categorie.getAll();
-            model.addAttribute("categories", categorie);
+            model.addAttribute("medicaments", medicaments);
+            model.addAttribute("clients", clients);
+            model.addAttribute("ventes", ventes);
+            model.addAttribute("categories", categories);
+            model.addAttribute("vendeurs", vendeurs);
+            code=1;
         } catch (Exception e) {
             model.addAttribute("error", "Erreur lors de la recherche des médicaments : " + e.getMessage());
         }

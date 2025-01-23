@@ -27,7 +27,7 @@ SELECT
     v.commission
 FROM VenteMedicament v 
 JOIN Client c ON v.idClient=c.idClient 
-JOIN User u ON v.idUser=u.idUser
+JOIN Users u ON v.idVendeur=u.idUser
 JOIN Medicament m ON v.idMedicament=m.idMedicament;
     
 

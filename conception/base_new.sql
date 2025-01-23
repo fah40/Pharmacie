@@ -117,7 +117,7 @@ CREATE TABLE VenteMedicament(
    idClient INTEGER,
    idVendeur INTEGER,
    commission NUMERIC(15,2),
-   FOREIGN KEY(idVendeur) REFERENCES User(idUser)
+   FOREIGN KEY(idVendeur) REFERENCES users(idUser),
    FOREIGN KEY(idMedicament) REFERENCES medicament(idMedicament),
    FOREIGN KEY(idClient) REFERENCES Client(idClient)
 );
@@ -129,7 +129,7 @@ CREATE TABLE Conseiller(
    FOREIGN KEY(idMedicament) REFERENCES medicament(idMedicament)
 );
 
-CREATE TABLE User(
+CREATE TABLE users(
    idUser SERIAL PRIMARY KEY,
    username VARCHAR(50) UNIQUE,
    password VARCHAR(255) NOT NULL,

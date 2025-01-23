@@ -54,7 +54,7 @@ public class User {
         PreparedStatement st = null;
 
         try {
-            String query = "INSERT INTO User (username, telephone) VALUES (?, ?, ?)";
+            String query = "INSERT INTO users (username, telephone) VALUES (?, ?, ?)";
             st = con.prepareStatement(query);
             st.setString(1, this.username);
             st.setString(3, this.telephone);
@@ -81,7 +81,7 @@ public class User {
         User user = null;
 
         try {
-            String query = "SELECT * FROM User WHERE idUser = ?";
+            String query = "SELECT * FROM users WHERE idUser = ?";
             st = con.prepareStatement(query);
             st.setInt(1, idUser);
             rs = st.executeQuery();
@@ -111,7 +111,7 @@ public class User {
         List<User> users = new ArrayList<>();
 
         try {
-            String query = "SELECT * FROM User ORDER BY idUser ASC";
+            String query = "SELECT * FROM users ORDER BY idUser ASC";
             st = con.prepareStatement(query);
             rs = st.executeQuery();
 
@@ -140,7 +140,7 @@ public class User {
         PreparedStatement st = null;
 
         try {
-            String query = "UPDATE User SET username = ?, telephone = ? WHERE idUser = ?";
+            String query = "UPDATE users SET username = ?, telephone = ? WHERE idUser = ?";
             st = con.prepareStatement(query);
             st.setString(1, this.username);
             st.setString(3, this.telephone);
@@ -166,7 +166,7 @@ public class User {
         PreparedStatement st = null;
 
         try {
-            String query = "DELETE FROM User WHERE idUser = ?";
+            String query = "DELETE FROM users WHERE idUser = ?";
             st = con.prepareStatement(query);
             st.setInt(1, idUser);
 
@@ -192,7 +192,7 @@ public class User {
         User user = null;
 
         try {
-            String query = "SELECT * FROM User ORDER BY idUser DESC LIMIT 1";
+            String query = "SELECT * FROM users ORDER BY idUser DESC LIMIT 1";
             st = con.prepareStatement(query);
             rs = st.executeQuery();
 

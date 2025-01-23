@@ -10,7 +10,7 @@
         <form class="row g-12" action="/vente/search" method="post">
           <div class="col-md-2">
             <select class="form-select" id="idUnite" name="type">
-                <option value="0">tout</option>
+                <option value="0">type personne</option>
                 <option value="1">adulte</option>
                 <option value="2">jeune</option>
                 <option value="3">bebe</option>
@@ -18,14 +18,25 @@
           </div>
           <div class="col-md-2">
             <select class="form-select" id="idUnite" name="idCategorie">
-                <option value="0">voir tout</option>
+                <option value="0">categorie</option>
               <c:forEach var="categorie" items="${categories}">
                   <option value="${categorie.idCategorie}">${categorie.nom}</option>
               </c:forEach>
             </select>
           </div>
           <div class="col-md-2">
-            <input type="date" class="form-control" name="date">
+              <select class="form-select" id="idVendeur" name="vendeur">
+                      <option value="0">vendeur</option>
+                  <c:forEach var="vendeur" items="${vendeurs}">
+                      <option value="${vendeur.idUser}">${vendeur.username}</option>
+                  </c:forEach>
+              </select>
+          </div>
+          <div class="col-md-2">
+            <input type="date" class="form-control" name="datemin">
+          </div>
+          <div class="col-md-2">
+            <input type="date" class="form-control" name="datemax">
           </div>
           <div class="col-md-2">
             <button type="submit" class="btn btn-success">rechercher</button>
@@ -45,26 +56,28 @@
                 <thead>
                   <tr>
                     <th>ID-vente</th>
-                    <th>ID-client</th>
                     <th>NOM-client</th>
                     <th>Medicament</th>
                     <th>Quantite</th>
                     <th>Prix unitaire</th>
                     <th>Prix total</th>
                     <th>Date</th>
+                    <th>vendeur</th>
+                    <th>commissions</th>
                   </tr>
                 </thead>
                 <tbody>
                   <c:forEach var="vente" items="${ventes}">
                     <tr>
                       <td>${vente.id}</td>
-                      <td>${vente.getClient().getIdClient()}</td>
                       <td>${vente.getClient().getNom()}</td>
                       <td>${vente.getMedicament().getNom()}</td>
                       <td>${vente.quantiteVendue}</td>
                       <td>${vente.prixUnitaire}</td>
                       <td>${vente.total}</td>
                       <td>${vente.dateVente}</td>
+                      <td>${vente.getVendeur().getUsername()}</td>
+                      <td>${vente.commission}</td>
                       <td>
                         <div class="text-right" style="display: flex;gap: 5px;">
                           <form action="/vente/delete/${vente.id}" method="post">
@@ -102,6 +115,15 @@
                     <select class="form-select" id="medicament" name="idMedicament">
                         <c:forEach var="medicament" items="${medicaments}">
                             <option value="${medicament.idMedicament}">${medicament.nom}</option>
+                        </c:forEach>
+                    </select>
+                </div>
+                
+                <div class="col-md-12">
+                    <label for="vendeur" class="form-label">vendeur</label>
+                    <select class="form-select" id="idVendeur" name="idVendeur">
+                        <c:forEach var="vendeur" items="${vendeurs}">
+                            <option value="${vendeur.idUser}">${vendeur.username}</option>
                         </c:forEach>
                     </select>
                 </div>
