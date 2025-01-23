@@ -12,16 +12,18 @@ public class User {
     private int idUser;
     private String username;
     private String telephone;
+    private Genre genre; // Nouvel attribut
 
     // Constructeur par défaut
     public User() {
     }
 
     // Constructeur avec tous les champs
-    public User(int idUser, String username, String telephone) {
+    public User(int idUser, String username, String telephone, Genre genre) {
         this.idUser = idUser;
         this.username = username;
         this.telephone = telephone;
+        this.genre = genre;
     }
 
     // Getters et Setters
@@ -49,15 +51,25 @@ public class User {
         this.telephone = telephone;
     }
 
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    // Méthode pour insérer un utilisateur dans la base de données
     public void insert() throws Exception {
         Connection con = MyConnect.getConnection();
         PreparedStatement st = null;
 
         try {
-            String query = "INSERT INTO users (username, telephone) VALUES (?, ?, ?)";
+            String query = "INSERT INTO users (username, telephone, idGenre) VALUES (?, ?, ?)";
             st = con.prepareStatement(query);
             st.setString(1, this.username);
-            st.setString(3, this.telephone);
+            st.setString(2, this.telephone);
+            st.setInt(3, this.genre != null ? this.genre.getIdGenre() : null);
 
             try {
                 st.executeUpdate();
@@ -74,6 +86,7 @@ public class User {
         }
     }
 
+    // Méthode pour récupérer un utilisateur par son ID
     public static User getById(int idUser) throws Exception {
         Connection con = MyConnect.getConnection();
         PreparedStatement st = null;
@@ -81,7 +94,12 @@ public class User {
         User user = null;
 
         try {
-            String query = "SELECT * FROM users WHERE idUser = ?";
+            String query = """
+                        SELECT u.*, g.idGenre, g.nom AS genreNom
+                        FROM users u
+                        LEFT JOIN genre g ON u.idGenre = g.idGenre
+                        WHERE u.idUser = ?
+                    """;
             st = con.prepareStatement(query);
             st.setInt(1, idUser);
             rs = st.executeQuery();
@@ -91,6 +109,12 @@ public class User {
                 user.setIdUser(rs.getInt("idUser"));
                 user.setUsername(rs.getString("username"));
                 user.setTelephone(rs.getString("telephone"));
+
+                // Récupération du genre
+                if (rs.getInt("idGenre") != 0) {
+                    Genre genre = new Genre(rs.getInt("idGenre"), rs.getString("genreNom"));
+                    user.setGenre(genre);
+                }
             }
         } finally {
             if (rs != null)
@@ -104,6 +128,7 @@ public class User {
         return user;
     }
 
+    // Méthode pour récupérer tous les utilisateurs
     public static User[] getAll() throws Exception {
         Connection con = MyConnect.getConnection();
         PreparedStatement st = null;
@@ -111,7 +136,12 @@ public class User {
         List<User> users = new ArrayList<>();
 
         try {
-            String query = "SELECT * FROM users ORDER BY idUser ASC";
+            String query = """
+                        SELECT u.*, g.idGenre, g.nom AS genreNom
+                        FROM users u
+                        LEFT JOIN genre g ON u.idGenre = g.idGenre
+                        ORDER BY u.idUser ASC
+                    """;
             st = con.prepareStatement(query);
             rs = st.executeQuery();
 
@@ -120,6 +150,12 @@ public class User {
                 user.setIdUser(rs.getInt("idUser"));
                 user.setUsername(rs.getString("username"));
                 user.setTelephone(rs.getString("telephone"));
+
+                // Récupération du genre
+                if (rs.getInt("idGenre") != 0) {
+                    Genre genre = new Genre(rs.getInt("idGenre"), rs.getString("genreNom"));
+                    user.setGenre(genre);
+                }
 
                 users.add(user);
             }
@@ -135,15 +171,17 @@ public class User {
         return users.toArray(new User[0]);
     }
 
+    // Méthode pour mettre à jour un utilisateur
     public void update() throws Exception {
         Connection con = MyConnect.getConnection();
         PreparedStatement st = null;
 
         try {
-            String query = "UPDATE users SET username = ?, telephone = ? WHERE idUser = ?";
+            String query = "UPDATE users SET username = ?, telephone = ?, idGenre = ? WHERE idUser = ?";
             st = con.prepareStatement(query);
             st.setString(1, this.username);
-            st.setString(3, this.telephone);
+            st.setString(2, this.telephone);
+            st.setInt(3, this.genre != null ? this.genre.getIdGenre() : null);
             st.setInt(4, this.idUser);
 
             try {
@@ -161,6 +199,7 @@ public class User {
         }
     }
 
+    // Méthode pour supprimer un utilisateur par son ID
     public static void deleteById(int idUser) throws Exception {
         Connection con = MyConnect.getConnection();
         PreparedStatement st = null;
@@ -185,6 +224,7 @@ public class User {
         }
     }
 
+    // Méthode pour récupérer le dernier utilisateur ajouté
     public static User getLast() throws Exception {
         Connection con = MyConnect.getConnection();
         PreparedStatement st = null;
@@ -192,7 +232,12 @@ public class User {
         User user = null;
 
         try {
-            String query = "SELECT * FROM users ORDER BY idUser DESC LIMIT 1";
+            String query = """
+                        SELECT u.*, g.idGenre, g.nom AS genreNom
+                        FROM users u
+                        LEFT JOIN genre g ON u.idGenre = g.idGenre
+                        ORDER BY u.idUser DESC LIMIT 1
+                    """;
             st = con.prepareStatement(query);
             rs = st.executeQuery();
 
@@ -201,6 +246,12 @@ public class User {
                 user.setIdUser(rs.getInt("idUser"));
                 user.setUsername(rs.getString("username"));
                 user.setTelephone(rs.getString("telephone"));
+
+                // Récupération du genre
+                if (rs.getInt("idGenre") != 0) {
+                    Genre genre = new Genre(rs.getInt("idGenre"), rs.getString("genreNom"));
+                    user.setGenre(genre);
+                }
             }
         } finally {
             if (rs != null)

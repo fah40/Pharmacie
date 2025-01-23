@@ -88,6 +88,12 @@
           <span>Ventes</span>
         </a>
       </li><!-- End Stock Nav -->
+      <li class="nav-item">
+        <a class="nav-link " href="/vente/list">
+          <i class="bi bi-grid"></i>
+          <span>Etat Commission</span>
+        </a>
+      </li><!-- End Stock Nav -->
     </ul>
 
   </aside><!-- End Sidebar-->

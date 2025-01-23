@@ -129,12 +129,26 @@ CREATE TABLE Conseiller(
    FOREIGN KEY(idMedicament) REFERENCES medicament(idMedicament)
 );
 
+CREATE TABLE genre(
+   idGenre SERIAL PRIMARY KEY,
+   nom VARCHAR(50)
+);
+
 CREATE TABLE users(
    idUser SERIAL PRIMARY KEY,
    username VARCHAR(50) UNIQUE,
    password VARCHAR(255) NOT NULL,
-   telephone VARCHAR(20) NOT NULL
+   telephone VARCHAR(20) NOT NULL,
+   idGenre INTEGER NOT NULL,
+   FOREIGN KEY(idGenre) REFERENCES genre(idGenre)
 );
+
+
 
 ALTER TABLE VenteMedicament
 ALTER COLUMN dateVente SET DEFAULT now();
+
+
+SELECT SUM(commission),idGenre FROM v_commission WHERE dateVente = ? AND idGenre = ?  ;
+SELECT SUM(commission),idGenre FROM v_commission WHERE dateVente = ? GROUP BY idGenre; 
+
