@@ -149,4 +149,13 @@ public class Categorie {
             if (con != null && !con.isClosed()) con.close();
         }
     }
+
+    public static void main(String[] args) throws Exception {
+        Categorie[] all= Categorie.getAll();
+
+        for (Categorie etat : all) {
+            System.out.println(etat.getNom());
+        }
+        
+    }
 }

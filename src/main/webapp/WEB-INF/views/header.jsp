@@ -40,7 +40,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
       <li class="nav-item">
         <a class="nav-link " href="/categorie/list">
-          <i class="fa fa-atom"></i>
+          <i class="fa fa-align-right"></i>
           <span>Categories</span>
         </a>
       </li><!-- End Block Nav -->
@@ -72,7 +72,7 @@
       </li><!-- End Stock Nav -->
       <li class="nav-item">
         <a class="nav-link " href="/production/list">
-          <i class="bi bi-grid"></i>
+          <i class="fa fa-cart-plus"></i>
           <span>Achat et stock</span>
         </a>
       </li><!-- End Stock Nav -->
@@ -89,8 +89,8 @@
         </a>
       </li><!-- End Stock Nav -->
       <li class="nav-item">
-        <a class="nav-link " href="/vente/list">
-          <i class="bi bi-grid"></i>
+        <a class="nav-link " href="/etat/list">
+          <i class="fa fa-money-check"></i>
           <span>Etat Commission</span>
         </a>
       </li><!-- End Stock Nav -->

@@ -48,7 +48,7 @@
 
         <!-- Sales List -->
         <div class="col-12">
-          <div class="card" style="height:50vh;overflow-y: auto;">
+          <div class="card" style="height:90vh;overflow-y: auto;">
             <div class="card-body">
               <!-- Default Table -->
               <h5 class="card-title">Liste des ventes</h5>

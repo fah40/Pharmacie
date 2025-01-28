@@ -204,4 +204,12 @@ public class Genre {
 
         return genre;
     }
+    public static void main(String[] args) throws Exception {
+        Genre[] all= Genre.getAll();
+
+        for (Genre etat : all) {
+            System.out.println(etat.getNom());
+        }
+        
+    }
 }
