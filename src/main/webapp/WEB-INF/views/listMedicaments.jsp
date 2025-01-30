@@ -22,6 +22,7 @@
                     <th>Maladie</th>
                     <th>categorie</th>
                     <th>Description</th>
+                    <th>prix</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -32,6 +33,7 @@
                       <td>${medicament.getMaladie().getNom()}</td>
                       <td>${medicament.getCategorie().getNom()}</td>
                       <td>${medicament.description}</td>
+                      <td>${medicament.prix}</td>
                       <td>
                         <div class="text-right" style="display: flex;gap: 5px;">
                           <form action="/medicament/edit/${medicament.idMedicament}" method="get">

@@ -52,3 +52,24 @@ CREATE TRIGGER trigger_calcul_commission
 BEFORE INSERT OR UPDATE ON VenteMedicament
 FOR EACH ROW
 EXECUTE FUNCTION calculer_commission();
+
+--================================================================ HistoriquePrix
+
+-- Création de la fonction du trigger
+CREATE OR REPLACE FUNCTION update_prix_medicament()
+RETURNS TRIGGER AS $$
+BEGIN
+
+   UPDATE medicament
+   SET prix = NEW.prix
+   WHERE idMedicament = NEW.idMedicament;
+
+   RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Création du trigger
+CREATE TRIGGER update_prix_trigger
+AFTER INSERT ON HistoriquePrix
+FOR EACH ROW
+EXECUTE FUNCTION update_prix_medicament();

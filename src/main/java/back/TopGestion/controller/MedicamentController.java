@@ -3,6 +3,8 @@ package back.TopGestion.controller;
 import back.TopGestion.model.Categorie;
 import back.TopGestion.model.Maladie;
 import back.TopGestion.model.Medicament;
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +37,10 @@ public class MedicamentController {
                                    @RequestParam int ageMin,
                                    @RequestParam int ageMax,
                                    @RequestParam int idCategorie,
+                                    HttpSession session,
                                    Model model) {
         try {
+            session.setAttribute("code","non");
             Medicament medicament = new Medicament();
             medicament.setNom(nom);
             medicament.setMaladie(Maladie.getById(idMaladie));

@@ -53,6 +53,13 @@
       </li><!-- End Block Nav -->
 
       <li class="nav-item">
+        <a class="nav-link " href="/modifPrix/list">
+          <i class="fa fa-atom"></i>
+          <span>Modification prix</span>
+        </a>
+      </li><!-- End Block Nav -->
+
+      <li class="nav-item">
         <a class="nav-link " href="/laboratoire/list">
           <i class="fa fa-box-open"></i>
           <span>Laboratoire</span>

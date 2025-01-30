@@ -1,6 +1,8 @@
 package back.TopGestion.controller;
 
 import back.TopGestion.model.Maladie;
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class MaladieController {
 
     @GetMapping("/list")
-    public String getAllMaladies(Model model) {
+    public String getAllMaladies(HttpSession session,Model model) {
+        session.setAttribute("code","non");
         try {
             Maladie[] maladies = Maladie.getAll();
             model.addAttribute("maladies", maladies);

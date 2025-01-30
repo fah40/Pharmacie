@@ -143,6 +143,15 @@ CREATE TABLE users(
    FOREIGN KEY(idGenre) REFERENCES genre(idGenre)
 );
 
+CREATE TABLE HistoriquePrix(
+   idHistorique SERIAL,
+   idMedicament INTEGER,
+   prix NUMERIC(15,2),
+   dateModif DATE DEFAULT CURRENT_DATE,
+   PRIMARY KEY(idHistorique),
+   FOREIGN KEY idMedicament REFERENCES medicament(idMedicament)
+);
+
 
 
 ALTER TABLE VenteMedicament

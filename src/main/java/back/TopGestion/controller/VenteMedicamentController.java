@@ -12,28 +12,32 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/vente")
 public class VenteMedicamentController {
-    Medicament[] medicaments = null;
+    Medicament[] medicaments =null;
     Client[] clients = null;
     VenteMedicament[] ventes = null;
     Categorie[] categories = null;
     User[] vendeurs = null;
 
-    int code=0;
-
     @GetMapping("/list")
-    public String getAllVentes(Model model) {
+    public String getAllVentes(HttpSession session,Model model) {
         try {
-            if (medicaments == null && clients==null && ventes==null && categories==null && vendeurs==null || code==1) {
+            String mode = (String) session.getAttribute("code");
+
+            if (mode.compareTo("non")==0 || mode.isEmpty()) {
+                session.setAttribute("code","ok");
                 medicaments = Medicament.getAll();
                 clients = Client.getAll();
                 ventes = VenteMedicament.getAll();
                 categories = Categorie.getAll();
                 vendeurs = User.getAll();
-                code=0;
             }
+            session.setAttribute("code","ok");
+
             model.addAttribute("medicaments", medicaments);
             model.addAttribute("clients", clients);
             model.addAttribute("ventes", ventes);
@@ -83,6 +87,8 @@ public class VenteMedicamentController {
             vente.insert();
 
             ventes = VenteMedicament.getAll();
+                
+            model.addAttribute("ventes", ventes);
 
             model.addAttribute("message", "Vente créée avec succès.");
         } catch (Exception e) {
@@ -132,11 +138,15 @@ public class VenteMedicamentController {
     public String deleteVente(@PathVariable int id, Model model) {
         try {
             VenteMedicament.deleteById(id);
+
+            ventes = VenteMedicament.getAll();
+                
+            model.addAttribute("ventes", ventes);
+            
             model.addAttribute("message", "Vente supprimée avec succès.");
         } catch (Exception e) {
             model.addAttribute("error", "Erreur lors de la suppression de la vente : " + e.getMessage());
         }
-        code=1;
         return "redirect:/vente/list";
     }
 
@@ -159,7 +169,6 @@ public class VenteMedicamentController {
             model.addAttribute("ventes", ventes);
             model.addAttribute("categories", categories);
             model.addAttribute("vendeurs", vendeurs);
-            code=1;
         } catch (Exception e) {
             model.addAttribute("error", "Erreur lors de la recherche des médicaments : " + e.getMessage());
         }
